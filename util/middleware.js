@@ -1,6 +1,8 @@
-const logger = require('./logger')
+const jwt = require('jsonwebtoken')
 
-const { Blog } = require('../models')
+const logger = require('./logger')
+const { SECRET } = require('../util/config')
+const { Blog, User } = require('../models')
 
 const requestLogger = (request, response, next) => {
   logger.info('Method:', request.method)
@@ -32,10 +34,27 @@ const blogFindById = async (req, res, next) => {
   next()
 }
 
+const tokenExtractor = (req, res, next) => {
+  const authorization = req.get('authorization')
+  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
+    try {
+      console.log(authorization.substring(7))
+      req.decodedToken = jwt.verify(authorization.substring(7), SECRET)
+    } catch (error) {
+      console.log(error)
+      return res.status(401).json({ error: 'token invalid' })
+    }
+  } else {
+    return res.status(401).json({ error: 'token missing' })
+  }
+  next()
+}
+
 module.exports = {
   requestLogger,
   unknownEndpoint,
   errorHandler,
-  blogFindById
+  blogFindById,
+  tokenExtractor
 }
 

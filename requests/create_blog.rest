@@ -1,0 +1,10 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJlc3R1c2VyMiIsImlkIjoiNjI3Y2VmMDYzMDhkMzg4MWMwNmQ4MjQ0IiwiaWF0IjoxNjUyMzU0ODUwfQ.rveWfY-6Ng7-bSQbbGUSFIIjgcBURJ3-4zMKz_RjLNM
+
+{
+    "title": "TITLE",
+    "author": "John Doe",
+    "url": "https://exampleurl.com",
+    "likes": 0
+}

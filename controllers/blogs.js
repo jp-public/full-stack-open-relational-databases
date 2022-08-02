@@ -7,8 +7,7 @@ router.get('/', async (req, res) => {
   const blogs = await Blog.findAll({
     attributes: { exclude: ['userId'] },
     include: {
-      model: User,
-      attributes: ['name']
+      model: User
     }
   })
   res.json(blogs)
@@ -24,8 +23,18 @@ router.get('/:id', blogFindById, async (req, res) => {
   res.json(req.blog)
 })
 
-router.delete('/:id', blogFindById, async (req, res) => {
-  await req.blog.destroy()
+router.delete('/:id', tokenExtractor, blogFindById, async (req, res) => {
+  const user = await User.findByPk(req.decodedToken.id)
+  console.log(user)
+  console.log(req.blog)
+  if (user.id === req.blog.userId) {
+    await req.blog.destroy()
+  } else {
+    return res
+      .status(401)
+      .json({ error: 'only user who created it can remove blog' })
+  }
+  res.status(204).end()
 })
 
 router.put('/:id', blogFindById, async (req, res) => {

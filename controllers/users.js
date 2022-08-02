@@ -18,12 +18,25 @@ router.post('/', async (req, res) => {
 })
 
 router.get('/:id', async (req, res) => {
-  const user = await User.findByPk(req.params.id)
+  const user = await User.findByPk(req.params.id, {
+    include: {
+      model: Blog,
+      attributes: { exclude: ['userId'] }
+    }
+  })
+
   if (user) {
     res.json(user)
   } else {
     res.status(404).end()
   }
+})
+
+router.put('/:username', async (req, res) => {
+  const user = await User.findOne({ where: { username: req.params.username } })
+  user.username = req.body.username
+  await user.save()
+  res.json(user)
 })
 
 module.exports = router

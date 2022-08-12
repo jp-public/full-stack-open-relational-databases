@@ -2,9 +2,9 @@ const { Model, DataTypes } = require('sequelize')
 
 const { sequelize } = require('../util/db')
 
-class UserBlogs extends Model {}
+class Readinglists extends Model {}
 
-UserBlogs.init(
+Readinglists.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -30,9 +30,9 @@ UserBlogs.init(
     sequelize,
     underscored: true,
     timestamps: false,
-    modelName: 'userBlogs'
+    modelName: 'readinglists'
   }
 )
 
-module.exports = UserBlogs
+module.exports = Readinglists
 

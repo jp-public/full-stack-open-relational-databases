@@ -1,13 +1,13 @@
 const router = require('express').Router()
 
-const { UserBlogs } = require('../models')
+const { Readinglists } = require('../models')
 
 router.post('/', async (req, res) => {
-  const userBlog = await UserBlogs.create({
+  const blogToReadingslist = await Readinglists.create({
     blogId: req.body.blog_id,
     userId: req.body.user_id
   })
-  res.json(userBlog)
+  res.json(blogToReadingslist)
 })
 
 module.exports = router

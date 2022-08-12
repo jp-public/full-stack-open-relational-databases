@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken')
 
 const logger = require('./logger')
 const { SECRET } = require('../util/config')
-const { Blog } = require('../models')
+const { Blog, Session, User } = require('../models')
 
 const requestLogger = (request, response, next) => {
   logger.info('Method:', request.method)
@@ -38,14 +38,29 @@ const blogFindById = async (req, res, next) => {
   next()
 }
 
-const tokenExtractor = (req, res, next) => {
+const tokenExtractor = async (req, res, next) => {
   const authorization = req.get('authorization')
   if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
     try {
-      console.log(authorization.substring(7))
-      req.decodedToken = jwt.verify(authorization.substring(7), SECRET)
+      const token = authorization.substring(7)
+
+      const session = await Session.findOne({ where: { token: token } })
+      if (!session) {
+        return res
+          .status(401)
+          .json({ error: 'session not valid, token probably expired' })
+      }
+
+      //disabling user, revokes rights immediately
+      const user = await User.findByPk(session.userId)
+      if (user.disabled) {
+        return res
+          .status(401)
+          .json({ error: 'account disabled, please contact admin' })
+      }
+
+      req.decodedToken = jwt.verify(token, SECRET)
     } catch (error) {
-      console.log(error)
       return res.status(401).json({ error: 'token invalid' })
     }
   } else {

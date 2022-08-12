@@ -17,6 +17,7 @@ const main = async () => {
       type: QueryTypes.SELECT
     })
     blogs.map((blog) => {
+      // eslint-disable-next-line quotes
       console.log(blog.author + `: '` + blog.title + `', likes: ` + blog.likes)
     })
     sequelize.close()

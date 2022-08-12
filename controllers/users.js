@@ -21,7 +21,9 @@ router.get('/:id', async (req, res) => {
   const user = await User.findByPk(req.params.id, {
     include: {
       model: Blog,
-      attributes: { exclude: ['userId'] }
+      as: 'readings',
+      attributes: { exclude: ['userId', 'createdAt', 'updatedAt'] },
+      through: { attributes: ['id', 'read'] }
     }
   })
 
